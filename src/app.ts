@@ -10,6 +10,7 @@ import { globalLimiter } from "./middlewares/rateLimiter";
 import { notFound } from "./middlewares/notFound";
 import { errorHandler } from "./middlewares/errorHandler";
 import authRoutes from "./routes/auth.routes";
+import eventRoutes from "./routes/event.routes";
 
 export function eventful(): Application {
   const app = express();
@@ -34,6 +35,7 @@ export function eventful(): Application {
   });
 
   app.use("/api/v1/auth", authRoutes);
+  app.use("/api/v1/events", eventRoutes);
 
   app.use(notFound);
   app.use(errorHandler);
