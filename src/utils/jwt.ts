@@ -1,6 +1,6 @@
-import jwt, { SignOptions } from 'jsonwebtoken';
-import { env } from '../config/env';
-import { UserRole } from '../models/User';
+import jwt, { SignOptions } from "jsonwebtoken";
+import { env } from "../config/env";
+import { UserRole } from "../models/User";
 
 export interface JwtPayload {
   sub: string; // user id
