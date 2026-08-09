@@ -2,6 +2,7 @@ import { redis } from "../config/redis";
 
 const DEFAULT_TTL_SECONDS = 60 * 5; // 5 minutes
 
+// tries redis first, on a miss runs fetcher(), caches it, returns it
 export async function cached<T>(
   key: string,
   fetcher: () => Promise<T>,
@@ -17,10 +18,12 @@ export async function cached<T>(
   return value;
 }
 
+// nukes one key
 export async function invalidateCache(key: string): Promise<void> {
   await redis.del(key);
 }
 
+// nukes everything matching a pattern, uses SCAN so it won't block redis on prod
 export async function invalidateCachePattern(pattern: string): Promise<void> {
   const stream = redis.scanStream({ match: pattern, count: 100 });
   const pipeline = redis.pipeline();
