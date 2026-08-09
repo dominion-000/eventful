@@ -70,6 +70,7 @@ export async function refreshTokens(incomingToken: string) {
 
   const matches = await bcrypt.compare(incomingToken, user.refreshTokenHash);
   if (!matches) {
+    // token got reused/stolen probably - kill the session instead of trusting it
     user.refreshTokenHash = null;
     await user.save();
     throw AppError.unauthorized("Refresh token invalid, please log in again");
