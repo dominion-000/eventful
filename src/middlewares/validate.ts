@@ -13,9 +13,12 @@ export function validate(schema: ZodType) {
       return next(result.error);
     }
 
-    // Overwrite with parsed (and coerced/defaulted) values
-    const data = result.data as { body?: unknown };
+    // req.query is skipped here on purpose - express 5 made it a getter,
+    // can't reassign it, so validated query goes on req.validatedQuery instead
+    const data = result.data as { body?: unknown; query?: unknown };
     if (data.body) req.body = data.body;
+    if (data.query)
+      req.validatedQuery = data.query as unknown as Record<string, unknown>;
     next();
   };
 }
