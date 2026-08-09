@@ -13,7 +13,7 @@ async function bootstrap() {
   });
 
   const shutdown = async (signal: string) => {
-    console.log(`\n${signal} received. Shutting down gracefully...`);
+    console.log(`\n${signal} received. Shutting down...`);
     server.close(async () => {
       await disconnectDB();
       redis.disconnect();

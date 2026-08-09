@@ -9,6 +9,7 @@ import { env } from "./config/env";
 import { globalLimiter } from "./middlewares/rateLimiter";
 import { notFound } from "./middlewares/notFound";
 import { errorHandler } from "./middlewares/errorHandler";
+import authRoutes from "./routes/auth.routes";
 
 export function eventful(): Application {
   const app = express();
@@ -31,6 +32,8 @@ export function eventful(): Application {
   app.get("/health", (req: Request, res: Response) => {
     res.status(200).json({ success: true, message: "Eventful is OK" });
   });
+
+  app.use("/api/v1/auth", authRoutes);
 
   app.use(notFound);
   app.use(errorHandler);
