@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { catchAsync } from "../utils/catchAsync";
 import { getParam } from "../utils/getParam";
 import * as eventService from "../services/event.service";
+import { buildShareLinks } from "../services/share.service";
 import { ListEventsQuery } from "../validators/event.validator";
 
 export const createEvent = catchAsync(async (req: Request, res: Response) => {
@@ -60,3 +61,11 @@ export const deleteEvent = catchAsync(async (req: Request, res: Response) => {
   await eventService.deleteDraftEvent(getParam(req, "id"), req.user!.id);
   res.status(204).send();
 });
+
+export const getEventShareLinks = catchAsync(
+  async (req: Request, res: Response) => {
+    const event = await eventService.getEventById(getParam(req, "id"));
+    const shareLinks = buildShareLinks(event);
+    res.status(200).json({ success: true, data: shareLinks });
+  },
+);
