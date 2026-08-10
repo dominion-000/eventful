@@ -1,20 +1,28 @@
+import http from "http";
 import { eventful } from "./app";
 import { env } from "./config/env";
 import { connectDB, disconnectDB } from "./config/db";
 import { redis } from "./config/redis";
+import { initSocket } from "./socket";
+import { startReminderJob, stopReminderJob } from "./jobs/reminder.job";
 
 async function bootstrap() {
   await connectDB();
 
   const app = eventful();
+  const httpServer = http.createServer(app);
 
-  const server = app.listen(env.PORT, () => {
+  initSocket(httpServer);
+  startReminderJob();
+
+  httpServer.listen(env.PORT, () => {
     console.log(`Eventful API running on port ${env.PORT} [${env.NODE_ENV}]`);
   });
 
   const shutdown = async (signal: string) => {
     console.log(`\n${signal} received. Shutting down...`);
-    server.close(async () => {
+    stopReminderJob();
+    httpServer.close(async () => {
       await disconnectDB();
       redis.disconnect();
       console.log("Shutdown complete");
