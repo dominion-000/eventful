@@ -7,6 +7,7 @@ import {
   updateEvent,
   cancelEvent,
   deleteEvent,
+  getEventShareLinks,
 } from "../controllers/event.controller";
 import { validate } from "../middlewares/validate";
 import {
@@ -37,6 +38,7 @@ router.post(
 );
 
 router.get("/:id", getEvent);
+router.get("/:id/share", getEventShareLinks);
 router.patch(
   "/:id",
   protect,

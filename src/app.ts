@@ -13,6 +13,7 @@ import authRoutes from "./routes/auth.routes";
 import eventRoutes from "./routes/event.routes";
 import ticketRoutes from "./routes/ticket.routes";
 import notificationRoutes from "./routes/notification.routes";
+import analyticsRoutes from "./routes/analytics.routes";
 import { paystackWebhook } from "./controllers/ticket.controller";
 
 export function eventful(): Application {
@@ -51,6 +52,7 @@ export function eventful(): Application {
   app.use("/api/v1/events", eventRoutes);
   app.use("/api/v1/tickets", ticketRoutes);
   app.use("/api/v1/notifications", notificationRoutes);
+  app.use("/api/v1/analytics", analyticsRoutes);
 
   app.use(notFound);
   app.use(errorHandler);
