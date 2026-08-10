@@ -1,13 +1,13 @@
-import axios from 'axios';
-import crypto from 'crypto';
-import { env } from '../config/env';
-import { AppError } from '../utils/AppError';
+import axios from "axios";
+import crypto from "crypto";
+import { env } from "../config/env";
+import { AppError } from "../utils/AppError";
 
 const paystackClient = axios.create({
-  baseURL: 'https://api.paystack.co',
+  baseURL: "https://api.paystack.co",
   headers: {
     Authorization: `Bearer ${env.PAYSTACK_SECRET_KEY}`,
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -25,9 +25,11 @@ interface InitializeResponse {
   reference: string;
 }
 
-export async function initializeTransaction(params: InitializeParams): Promise<InitializeResponse> {
+export async function initializeTransaction(
+  params: InitializeParams,
+): Promise<InitializeResponse> {
   try {
-    const res = await paystackClient.post('/transaction/initialize', {
+    const res = await paystackClient.post("/transaction/initialize", {
       email: params.email,
       amount: Math.round(params.amountNaira * 100), // paystack works in kobo
       reference: params.reference,
@@ -36,19 +38,27 @@ export async function initializeTransaction(params: InitializeParams): Promise<I
     });
 
     const { authorization_url, access_code, reference } = res.data.data;
-    return { authorizationUrl: authorization_url, accessCode: access_code, reference };
+    return {
+      authorizationUrl: authorization_url,
+      accessCode: access_code,
+      reference,
+    };
   } catch (err) {
     if (axios.isAxiosError(err)) {
       throw new AppError(
         `Paystack initialize failed: ${err.response?.data?.message ?? err.message}`,
-        502
+        502,
       );
     }
     throw err;
   }
 }
 
-export type PaystackVerifyStatus = 'success' | 'failed' | 'abandoned' | 'pending';
+export type PaystackVerifyStatus =
+  | "success"
+  | "failed"
+  | "abandoned"
+  | "pending";
 
 interface VerifyResponse {
   status: PaystackVerifyStatus;
@@ -57,9 +67,13 @@ interface VerifyResponse {
   paidAt: string | null;
 }
 
-export async function verifyTransaction(reference: string): Promise<VerifyResponse> {
+export async function verifyTransaction(
+  reference: string,
+): Promise<VerifyResponse> {
   try {
-    const res = await paystackClient.get(`/transaction/verify/${encodeURIComponent(reference)}`);
+    const res = await paystackClient.get(
+      `/transaction/verify/${encodeURIComponent(reference)}`,
+    );
     const data = res.data.data;
     return {
       status: data.status,
@@ -71,7 +85,7 @@ export async function verifyTransaction(reference: string): Promise<VerifyRespon
     if (axios.isAxiosError(err)) {
       throw new AppError(
         `Paystack verify failed: ${err.response?.data?.message ?? err.message}`,
-        502
+        502,
       );
     }
     throw err;
@@ -83,8 +97,14 @@ export async function verifyTransaction(reference: string): Promise<VerifyRespon
  * Never trust a webhook payload without checking this first - anyone can POST
  * a fake "payment successful" body to a public endpoint otherwise.
  */
-export function verifyWebhookSignature(rawBody: Buffer, signatureHeader: string | undefined): boolean {
+export function verifyWebhookSignature(
+  rawBody: Buffer,
+  signatureHeader: string | undefined,
+): boolean {
   if (!signatureHeader) return false;
-  const hash = crypto.createHmac('sha512', env.PAYSTACK_SECRET_KEY).update(rawBody).digest('hex');
+  const hash = crypto
+    .createHmac("sha512", env.PAYSTACK_SECRET_KEY)
+    .update(rawBody)
+    .digest("hex");
   return hash === signatureHeader;
 }
