@@ -1,6 +1,6 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model, Document, Types } from "mongoose";
 
-export type PaymentStatus = 'pending' | 'success' | 'failed';
+export type PaymentStatus = "pending" | "success" | "failed";
 
 export interface ITicket extends Document {
   _id: Types.ObjectId;
@@ -12,6 +12,11 @@ export interface ITicket extends Document {
   qrToken: string | null;
   checkedIn: boolean;
   checkedInAt: Date | null;
+  // if empty, the event's own reminderOffsetsMinutes applies - only set this
+  // when the eventee wants their own schedule instead of the creator's default
+  reminderOffsetsMinutes: number[];
+  // offsets already dispatched, so the reminder job never sends the same one twice
+  remindersSent: number[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -20,12 +25,12 @@ const ticketSchema = new Schema<ITicket>(
   {
     event: {
       type: Schema.Types.ObjectId,
-      ref: 'Event',
+      ref: "Event",
       required: true,
     },
     eventee: {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       required: true,
     },
     // unique paystack transaction reference we generate at initialize time -
@@ -42,8 +47,8 @@ const ticketSchema = new Schema<ITicket>(
     },
     paymentStatus: {
       type: String,
-      enum: ['pending', 'success', 'failed'],
-      default: 'pending',
+      enum: ["pending", "success", "failed"],
+      default: "pending",
     },
     // set once payment succeeds - a signed token, not just the ticket id,
     // so a scanner can't be tricked by guessing/incrementing ids
@@ -59,11 +64,19 @@ const ticketSchema = new Schema<ITicket>(
       type: Date,
       default: null,
     },
+    reminderOffsetsMinutes: {
+      type: [Number],
+      default: [],
+    },
+    remindersSent: {
+      type: [Number],
+      default: [],
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 ticketSchema.index({ event: 1, paymentStatus: 1 });
 ticketSchema.index({ eventee: 1, createdAt: -1 });
 
-export const Ticket = model<ITicket>('Ticket', ticketSchema);
+export const Ticket = model<ITicket>("Ticket", ticketSchema);
