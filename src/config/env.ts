@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import { z } from "zod";
 
-dotenv.config();
+dotenv.config({ quiet: true });
 
 const envSchema = z.object({
   NODE_ENV: z
@@ -18,8 +18,10 @@ const envSchema = z.object({
   JWT_ACCESS_EXPIRES_IN: z.string().default("15m"),
   JWT_REFRESH_EXPIRES_IN: z.string().default("7d"),
 
-  PAYSTACK_SECRET_KEY: z.string().optional(),
+  PAYSTACK_SECRET_KEY: z.string().min(1, "PAYSTACK_SECRET_KEY is required"),
   PAYSTACK_PUBLIC_KEY: z.string().optional(),
+
+  QR_SIGNING_SECRET: z.string().min(10, "QR_SIGNING_SECRET is required"),
 
   CLIENT_URL: z.string().default("*"),
 });
