@@ -7,6 +7,7 @@ import { AppError } from "../utils/AppError";
 import { initializeTransaction, verifyTransaction } from "./paystack.service";
 import { generateQrToken, verifyQrToken } from "./qr.service";
 import { emitToUser, emitToEvent } from "../socket";
+import { invalidateAnalyticsCache } from "./analytics.service";
 
 async function countSoldTickets(eventId: string): Promise<number> {
   return Ticket.countDocuments({ event: eventId, paymentStatus: "success" });
@@ -128,6 +129,10 @@ async function confirmTicketPayment(ticket: ITicket): Promise<ITicket> {
     sold: sold + 1,
     capacity: event.capacity,
   });
+  await invalidateAnalyticsCache(
+    event._id.toString(),
+    event.creator.toString(),
+  );
 
   return ticket;
 }
@@ -275,6 +280,7 @@ export async function scanTicket(
     ticketId: ticket._id.toString(),
     checkedInCount,
   });
+  await invalidateAnalyticsCache(event._id.toString(), creatorId);
 
   return ticket;
 }
