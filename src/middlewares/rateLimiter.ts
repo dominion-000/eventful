@@ -23,3 +23,23 @@ export const authLimiter = rateLimit({
     message: "Too many auth attempts, please try again later.",
   },
 });
+
+/*For ticket purchase specifically*/
+export const paymentLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: "Too many payment attempts, please try again later.",
+  },
+});
+
+export const webhookLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  limit: 120,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: "Too many webhook calls." },
+});
