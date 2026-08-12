@@ -4,9 +4,10 @@ import helmet from "helmet";
 import morgan from "morgan";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import swaggerUi from "swagger-ui-express";
 
 import { env } from "./config/env";
-import { globalLimiter } from "./middlewares/rateLimiter";
+import { globalLimiter, webhookLimiter } from "./middlewares/rateLimiter";
 import { notFound } from "./middlewares/notFound";
 import { errorHandler } from "./middlewares/errorHandler";
 import authRoutes from "./routes/auth.routes";
@@ -15,6 +16,7 @@ import ticketRoutes from "./routes/ticket.routes";
 import notificationRoutes from "./routes/notification.routes";
 import analyticsRoutes from "./routes/analytics.routes";
 import { paystackWebhook } from "./controllers/ticket.controller";
+import { openapiSpec } from "./docs/openapi";
 
 export function eventful(): Application {
   const app = express();
@@ -28,6 +30,7 @@ export function eventful(): Application {
   // already consumed and re-serialized the body by the time this runs.
   app.post(
     "/api/v1/payments/webhook",
+    webhookLimiter,
     express.raw({ type: "application/json" }),
     paystackWebhook,
   );
@@ -40,6 +43,13 @@ export function eventful(): Application {
   if (env.NODE_ENV !== "test") {
     app.use(morgan(env.NODE_ENV === "development" ? "dev" : "combined"));
   }
+
+  // API docs - registered before the global rate limiter, since it's just
+  // static UI/JSON and shouldn't count against the same budget as real endpoints
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(openapiSpec));
+  app.get("/docs.json", (req: Request, res: Response) => {
+    res.status(200).json(openapiSpec);
+  });
 
   app.use(globalLimiter);
 

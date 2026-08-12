@@ -7,7 +7,8 @@ A ticketing platform for concerts, theater, sports, and cultural events. Creator
 - **Runtime:** Node.js + TypeScript (strict mode)
 - **Framework:** Express 5
 - **Database:** MongoDB + Mongoose 8
-- **Cache:** Redis (cache-aside pattern on all read-heavy queries)
+- **Cache:** Redis (cache-aside pattern on all read-heavy queries, including analytics)
+- **Realtime:** Socket.IO (JWT-authed handshake, same access token as the REST API)
 - **Auth:** JWT (short-lived access token + httpOnly-cookie refresh token, with reuse detection)
 - **Payments:** Paystack
 - **QR codes:** signed tokens (`ticketId.signature`), not bare IDs — can't be forged by guessing
@@ -43,16 +44,46 @@ See `.env.example` for the full list with defaults.
 
 Base path: `/api/v1`
 
-**Auth** — `/auth`
-`POST /register` · `POST /login` · `POST /refresh` · `POST /logout` · `GET /me`
+### **Auth** — `/auth`
 
-**Events** — `/events`
-`GET /` (public browse, filter + search + pagination) · `GET /mine` (creator) · `POST /` (creator) · `GET /:id` · `PATCH /:id` (creator) · `POST /:id/cancel` (creator) · `DELETE /:id` (creator, draft only)
+- `POST /register`
+- `POST /login`
+- `POST /refresh`
+- `POST /logout`
+- `GET /me`
 
-**Tickets** — `/tickets`
-`POST /` (eventee, buy a ticket) · `GET /mine` (eventee) · `GET /mine/:id/qr` (eventee) · `GET /event/:eventId` (creator) · `POST /scan` (creator, check-in)
+### **Events** — `/events`
+
+- `GET /` (public browse, filter + search + pagination)
+- `GET /mine` (creator)
+- `POST /` (creator)
+- `GET /:id`
+- `PATCH /:id` (creator)
+- `POST /:id/cancel` (creator)
+- `DELETE /:id` (creator, draft only)
+
+### **Tickets** — `/tickets`
+
+- `POST /` (eventee, buy a ticket)
+- `GET /mine` (eventee)
+- `GET /mine/:id/qr` (eventee)
+- `POST /mine/:id/verify` (eventee, manual payment check)
+- `PATCH /mine/:id/reminders` (eventee, custom reminder schedule)
+- `GET /event/:eventId` (creator)
+- `POST /scan` (creator, check-in)
 
 **Payments** — `/payments`
-`POST /webhook` (Paystack calls this — not for direct use)
 
-Full request/response shapes are coming in Phase 7 as a Swagger doc — this table is the interim reference.
+- `POST /webhook` (Paystack calls this, not for direct use)
+
+**Notifications** — `/notifications`
+
+- `GET /mine`
+- `PATCH /:id/read`
+
+**Analytics** — `/analytics` (creator only)
+
+- `GET /overview` (all-time totals)
+- `GET /events/:id` (per-event breakdown)
+
+**API Docs** - `/docs`: Swagger UI, or fetch **`/docs.json`** for the raw OpenAPI spec.
