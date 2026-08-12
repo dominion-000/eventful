@@ -1,0 +1,26 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container">
+    <h1>My Tickets</h1>
+    <div id="message" class="message hidden"></div>
+    <div id="tickets-list"></div>
+    <div id="empty-state" class="empty-state hidden">You haven't bought any tickets yet.</div>
+  </div>
+</main>
+
+<div id="qr-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h2>Your Ticket</h2>
+    <img id="qr-image" alt="Ticket QR code" />
+    <p class="subtitle">Show this at the door to check in.</p>
+    <button class="btn btn-full" id="close-modal">Close</button>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/my-tickets.js"></script>
+</body>
+</html>

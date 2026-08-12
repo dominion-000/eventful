@@ -1,0 +1,29 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container">
+    <h1>Discover Events</h1>
+    <p class="subtitle">Concerts, theater, sports, and cultural gatherings.</p>
+
+    <div class="form-row" style="margin-bottom: 24px; grid-template-columns: 2fr 1fr;">
+      <input type="text" id="search-input" placeholder="Search events…" />
+      <select id="category-filter">
+        <option value="">All categories</option>
+        <option value="concert">Concert</option>
+        <option value="theater">Theater</option>
+        <option value="sports">Sports</option>
+        <option value="cultural">Cultural</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+
+    <div id="events-grid" class="event-grid"></div>
+    <div id="empty-state" class="empty-state hidden">No events found.</div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/js/home.js"></script>
+</body>
+</html>

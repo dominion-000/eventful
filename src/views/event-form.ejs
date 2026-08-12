@@ -1,0 +1,72 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container">
+    <div class="card form-card" data-event-id="<%= eventId || '' %>">
+      <h2><%= title %></h2>
+      <div id="message" class="message hidden"></div>
+
+      <form id="event-form">
+        <div class="form-group">
+          <label for="event-title">Title</label>
+          <input type="text" id="event-title" required minlength="3" maxlength="150" />
+        </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea id="description" required></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="category">Category</label>
+            <select id="category" required>
+              <option value="concert">Concert</option>
+              <option value="theater">Theater</option>
+              <option value="sports">Sports</option>
+              <option value="cultural">Cultural</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="venue">Venue</label>
+            <input type="text" id="venue" required />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="start-date">Start Date &amp; Time</label>
+            <input type="datetime-local" id="start-date" required />
+          </div>
+          <div class="form-group">
+            <label for="capacity">Capacity</label>
+            <input type="number" id="capacity" required min="1" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price">Ticket Price (₦)</label>
+            <input type="number" id="price" min="0" value="0" />
+          </div>
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status">
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="reminders">Default reminders (minutes before, comma-separated)</label>
+          <input type="text" id="reminders" value="1440" placeholder="e.g. 1440, 60" />
+        </div>
+
+        <button type="submit" class="btn btn-full" id="submit-btn">Save Event</button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/js/event-form.js"></script>
+</body>
+</html>

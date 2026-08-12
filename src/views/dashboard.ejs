@@ -1,0 +1,24 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container">
+    <div class="section-header">
+      <h1>Dashboard</h1>
+      <a href="/dashboard/events/new" class="btn">+ New Event</a>
+    </div>
+
+    <div id="stats" class="stats-grid"></div>
+
+    <div id="message" class="message hidden"></div>
+    <div id="events-list"></div>
+    <div id="empty-state" class="empty-state hidden">
+      You haven't created any events yet. <a href="/dashboard/events/new">Create your first one</a>.
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/js/dashboard.js"></script>
+</body>
+</html>

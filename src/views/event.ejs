@@ -1,0 +1,39 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container">
+    <div id="loading" class="empty-state">Loading…</div>
+
+    <div id="event-content" class="hidden" data-event-id="<%= eventId %>">
+      <span id="category" class="category" style="margin-bottom: 12px;"></span>
+      <h1 id="title"></h1>
+      <p class="subtitle" id="meta"></p>
+
+      <div class="card" style="margin-bottom: 24px;">
+        <p id="description"></p>
+        <div id="message" class="message hidden"></div>
+        <div id="action-area"></div>
+      </div>
+
+      <div class="card">
+        <h2>Share this event</h2>
+        <div id="share-links" class="share-links"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div id="qr-modal" class="modal-overlay hidden">
+  <div class="modal">
+    <h2>Your Ticket</h2>
+    <img id="qr-image" alt="Ticket QR code" />
+    <p class="subtitle">Show this at the door to check in.</p>
+    <button class="btn btn-full" id="close-modal">Close</button>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
+<script src="/js/event.js"></script>
+</body>
+</html>

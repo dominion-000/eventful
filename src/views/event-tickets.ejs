@@ -1,0 +1,20 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container" data-event-id="<%= eventId %>">
+    <h1 id="event-title">Event Tickets</h1>
+
+    <div id="stats" class="stats-grid"></div>
+
+    <div id="message" class="message hidden"></div>
+    <div id="tickets-list"></div>
+    <div id="empty-state" class="empty-state hidden">No tickets sold yet.</div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/event-tickets.js"></script>
+</body>
+</html>

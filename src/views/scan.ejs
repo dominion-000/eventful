@@ -1,0 +1,30 @@
+<%- include('partials/head') %>
+<%- include('partials/header') %>
+
+<main>
+  <div class="container">
+    <h1>Scan Tickets</h1>
+    <p class="subtitle">Paste an eventee's QR token to check them in.</p>
+
+    <div id="message" class="message hidden"></div>
+
+    <div class="card" style="margin-bottom: 24px;">
+      <div class="form-group">
+        <label for="manual-token">QR Token</label>
+        <input type="text" id="manual-token" placeholder="Paste the scanned token here" autofocus />
+      </div>
+      <button class="btn btn-full" id="scan-btn">Check In</button>
+    </div>
+
+    <div class="card">
+      <h2>Live Activity</h2>
+      <div id="log" class="empty-state">Check-ins across your events will appear here.</div>
+    </div>
+  </div>
+</main>
+
+<%- include('partials/footer') %>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/scan.js"></script>
+</body>
+</html>
