@@ -16,6 +16,7 @@ import {
 } from "../validators/ticket.validator";
 import { paginationQuerySchema } from "../validators/common.validator";
 import { protect, restrictTo } from "../middlewares/auth.middleware";
+import { paymentLimiter } from "../middlewares/rateLimiter";
 
 const router = Router();
 
@@ -23,6 +24,7 @@ router.post(
   "/",
   protect,
   restrictTo("eventee"),
+  paymentLimiter,
   validate(purchaseTicketSchema),
   purchaseTicket,
 );
@@ -34,7 +36,13 @@ router.get(
   myTickets,
 );
 router.get("/mine/:id/qr", protect, restrictTo("eventee"), myTicketQrCode);
-router.post("/mine/:id/verify", protect, restrictTo("eventee"), verifyMyTicket);
+router.post(
+  "/mine/:id/verify",
+  protect,
+  restrictTo("eventee"),
+  paymentLimiter,
+  verifyMyTicket,
+);
 router.patch(
   "/mine/:id/reminders",
   protect,
