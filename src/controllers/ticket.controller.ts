@@ -9,7 +9,15 @@ import { verifyWebhookSignature } from "../services/paystack.service";
 export const purchaseTicket = catchAsync(
   async (req: Request, res: Response) => {
     const { eventId } = req.body;
-    const result = await ticketService.purchaseTicket(req.user!.id, eventId);
+    // build the callback base from the actual request rather than trusting
+    // CLIENT_URL to be configured - works correctly on localhost, Render,
+    // or wherever this ends up, with zero extra setup
+    const callbackBase = `${req.protocol}://${req.get("host")}`;
+    const result = await ticketService.purchaseTicket(
+      req.user!.id,
+      eventId,
+      callbackBase,
+    );
     res.status(201).json({
       success: true,
       message: "Checkout initialized",
