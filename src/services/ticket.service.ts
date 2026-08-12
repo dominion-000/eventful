@@ -13,7 +13,11 @@ async function countSoldTickets(eventId: string): Promise<number> {
   return Ticket.countDocuments({ event: eventId, paymentStatus: "success" });
 }
 
-export async function purchaseTicket(eventeeId: string, eventId: string) {
+export async function purchaseTicket(
+  eventeeId: string,
+  eventId: string,
+  callbackBase: string,
+) {
   const event = await Event.findById(eventId);
   if (!event) throw AppError.notFound("Event not found");
   if (event.status !== "published")
@@ -58,6 +62,7 @@ export async function purchaseTicket(eventeeId: string, eventId: string) {
     email: eventee.email,
     amountNaira: event.ticketPriceNaira,
     reference,
+    callbackUrl: `${callbackBase}/my-tickets?ticketId=${ticket._id.toString()}`,
     metadata: {
       eventId: event._id.toString(),
       eventeeId: eventee._id.toString(),
