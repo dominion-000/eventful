@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from "express";
+import path from "path";
 import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
@@ -17,9 +18,16 @@ import notificationRoutes from "./routes/notification.routes";
 import analyticsRoutes from "./routes/analytics.routes";
 import { paystackWebhook } from "./controllers/ticket.controller";
 import { openapiSpec } from "./docs/openapi";
+import viewRoutes from "./routes/view.routes";
 
 export function eventful(): Application {
   const app = express();
+
+  // Required behind Render's (or any) reverse proxy - without this, Express
+  // sees the proxy's IP for every request, not the real client's. That
+  // silently breaks two things: rate limiters end up bucketing all users
+  // together under one IP, and req.protocol/req.secure report wrong values.
+  app.set("trust proxy", 1);
 
   // Core middleware
   app.use(helmet());
@@ -43,6 +51,11 @@ export function eventful(): Application {
   if (env.NODE_ENV !== "test") {
     app.use(morgan(env.NODE_ENV === "development" ? "dev" : "combined"));
   }
+
+  app.set("view engine", "ejs");
+  app.set("views", path.join(__dirname, "views"));
+  app.use(express.static(path.join(__dirname, "public")));
+  app.use("/", viewRoutes);
 
   // API docs - registered before the global rate limiter, since it's just
   // static UI/JSON and shouldn't count against the same budget as real endpoints
