@@ -87,3 +87,15 @@ Base path: `/api/v1`
 - `GET /events/:id` (per-event breakdown)
 
 **API Docs** - `/docs`: Swagger UI, or fetch **`/docs.json`** for the raw OpenAPI spec.
+
+## Testing
+
+```bash
+npm run test
+```
+
+Or watch
+
+```bash
+npm run test:watch
+```
