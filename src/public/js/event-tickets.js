@@ -60,7 +60,7 @@ async function loadAnalytics() {
 }
 
 async function loadTickets() {
-  const { ok, body } = await apiFetch(`/tickets/event/${eventId}?limit=100`);
+  const { ok, body } = await apiFetch(`/tickets/event/${eventId}?limit=50`);
   if (ok) renderTickets(body.data.items);
   else showMessage(messageEl, body?.message || "Could not load tickets");
 }

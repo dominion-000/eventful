@@ -53,6 +53,10 @@ async function refreshAccessToken() {
   return token;
 }
 
+/**
+ * Fetch wrapper for all API calls. Pass a path like "/events" - the
+ * "/api/v1" prefix and JSON headers are handled here.
+ */
 async function apiFetch(path, options = {}) {
   const doFetch = (token) =>
     fetch(`${API_BASE}${path}`, {

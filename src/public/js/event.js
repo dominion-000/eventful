@@ -89,6 +89,9 @@ async function loadEvent() {
       a.textContent = platform.charAt(0).toUpperCase() + platform.slice(1);
       shareContainer.appendChild(a);
     }
+  } else {
+    document.getElementById("share-links").innerHTML =
+      '<span class="meta">Could not load share links.</span>';
   }
 
   loadingEl.classList.add("hidden");
