@@ -2,6 +2,11 @@ import { redis } from "../config/redis";
 
 const DEFAULT_TTL_SECONDS = 60 * 5; // 5 minutes
 
+// NOTE: values round-trip through JSON on a cache hit, so Date objects
+// come back as plain strings (Dates survived on a miss, since that's the
+// object straight from fetcher()). Any consumer that calls a Date-only
+// method (.toDateString(), .getTime(), etc.) on a cached() result must
+// coerce with `new Date(x)` first, don't assume the type survives.
 // tries redis first, on a miss runs fetcher(), caches it, returns it
 export async function cached<T>(
   key: string,
