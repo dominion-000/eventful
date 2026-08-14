@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { Event } from "../models/Event";
 import { Ticket } from "../models/Ticket";
 import { AppError } from "../utils/AppError";
@@ -34,8 +35,15 @@ async function aggregateTickets(eventIds: string[]): Promise<AggregateResult> {
     return { totalTicketsSold: 0, totalRevenueNaira: 0, totalCheckedIn: 0 };
   }
 
+  // .aggregate() bypasses Mongoose's normal query casting (unlike .find()),
+  // so a plain string here would never match Ticket.event, which is stored
+  // as a real ObjectId - $in needs actual ObjectId instances or it silently
+  // matches nothing, which is exactly why this showed 0 tickets sold/checked
+  // in even with real successful tickets sitting in the collection.
+  const objectIds = eventIds.map((id) => new mongoose.Types.ObjectId(id));
+
   const [result] = await Ticket.aggregate([
-    { $match: { event: { $in: eventIds }, paymentStatus: "success" } },
+    { $match: { event: { $in: objectIds }, paymentStatus: "success" } },
     {
       $group: {
         _id: null,

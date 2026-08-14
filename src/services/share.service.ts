@@ -8,7 +8,7 @@ export function buildShareLinks(event: IEvent) {
   const eventUrl = `${base}/events/${event._id.toString()}`;
 
   const title = event.title;
-  const text = `Check out "${event.title}" on Eventful - ${event.venue}, ${event.startDate.toDateString()}`;
+  const text = `Check out "${event.title}" on Eventful - ${event.venue}, ${new Date(event.startDate).toDateString()}`;
 
   const encodedUrl = encodeURIComponent(eventUrl);
   const encodedText = encodeURIComponent(text);
