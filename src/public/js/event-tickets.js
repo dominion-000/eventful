@@ -1,5 +1,5 @@
 const user = requireAuth("creator");
-const container = document.querySelector(".container");
+const container = document.getElementById("event-tickets-root");
 const eventId = container.dataset.eventId;
 const statsEl = document.getElementById("stats");
 const listEl = document.getElementById("tickets-list");

@@ -17,11 +17,6 @@ function renderActionArea(event) {
   }
 
   if (user.role === "creator") {
-    if (!event._id) {
-      console.error("Event object is missing _id - full object:", event);
-      actionArea.innerHTML = `<p class="subtitle">Something went wrong loading this event.</p>`;
-      return;
-    }
     if (user.id === event.creator) {
       actionArea.innerHTML = `
         <div class="row-actions">
